@@ -1,0 +1,26 @@
+{
+  "name": "candoo",
+  "description": "minimal activity based authorization middleware for connect/express",
+  "version": "1.0.0",
+  "author": "Kyle Graves <kylgrvs@gmail.com> (http://kgraves.github.io)",
+  "license": "MIT",
+  "repository": "",
+  "homepage": "",
+  "keywords": [
+    "authorization",
+    "auth",
+    "authz",
+    "activity",
+    "activities",
+    "role",
+    "roles"
+  ],
+  "devDependencies": {
+    "jasmine": "^2.3.1",
+    "sinon": "^1.15.3"
+  },
+  "main": "index.js",
+  "scripts": {
+    "test": "jasmine"
+  }
+}
