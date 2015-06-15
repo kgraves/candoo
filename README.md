@@ -1,6 +1,9 @@
 # candoo
 A minimal activity based authorization middleware for connect/express
 
+[![Build Status](https://travis-ci.org/kgraves/candoo.svg?branch=master)](https://travis-ci.org/kgraves/candoo)
+[![Coverage Status](https://coveralls.io/repos/kgraves/candoo/badge.svg)](https://coveralls.io/r/kgraves/candoo)
+
 This is heavily inspired by Derick Bailey's [mustbe](https://github.com/derickbailey/mustbe).
 
 It makes no assumptions about how or where roles are stored or how you authorize
