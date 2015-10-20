@@ -1,7 +1,7 @@
 {
   "name": "candoo",
   "description": "minimal activity based authorization middleware for connect/express",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "author": "Kyle Graves <kylgrvs@gmail.com> (http://kgraves.github.io)",
   "license": "MIT",
   "repository": "https://github.com/kgraves/candoo",
