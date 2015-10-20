@@ -30,12 +30,36 @@ can.configureActivities({
     done(req.user !== undefined);
   },
 
-  // you can pass a custom error message to the callback for a failure
+  /**
+   * You can pass a custom error message to the callback for a failure.
+   */
   'view.admin.page': function(req, done) {
     if (req.user && req.user.role === 'admin') {
       done(true);
     } else {
       done(false, 'admins only!');
+    }
+  },
+
+  /**
+   * You can pass an options object for further functionality.
+   *
+   * The following options are supported:
+   * {
+   *   onFailure: function(req, res, next) {...}
+   * }
+   *
+   * Currently the only option that is recognized is an `onFailure` callback.
+   * This gives you more granular control when there is an unauthorized request.
+   * For example, one may have the need to redirect unauthorized requests to 
+   * different endpoints, instead of relying on error handlers further down the
+   * line.
+   */
+  'view.stats': function(req, done) {
+    if (req.user && req.user.isOwner(someModelObject)) {
+      done(true);
+    } else {
+      done(false, '', { onFailure: helpers.redirectToLogin });
     }
   }
 

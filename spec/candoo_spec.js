@@ -13,12 +13,15 @@ describe('candoo', function() {
 
     it('should contain all defined functions', function() {
       expect('_activityRegistry' in candoo).toEqual(true);
+      expect('_notRegisteredMessage' in candoo).toEqual(true);
+      expect('_unauthorizedStatusCode' in candoo).toEqual(true);
       expect('configureActivities' in candoo).toEqual(true);
       expect('do' in candoo).toEqual(true);
     });
 
     it('should define an empty object for the registry', function() {
       var length = Object.keys(candoo._activityRegistry).length;
+      expect(candoo._activityRegistry instanceof Object).toBe(true);
       expect(length).toEqual(0);
     });
 
@@ -37,7 +40,8 @@ describe('candoo', function() {
 
     it('should add a single activity to the registry', function() {
       var activity = {
-        'view.profile': function(req, done) {}
+        'view.profile': null
+        // 'view.profile': function(req, done) {}
       };
 
       candoo.configureActivities(activity);
@@ -50,10 +54,10 @@ describe('candoo', function() {
 
     it('should add a multiple activities to the registry', function() {
       var activities = {
-        'view.profile': function(req, done) {},
-        'view.admin.page': function(req, done) {},
-        'view.settings': function(req, done) {},
-        'view.stats': function(req, done) {}
+        'view.profile': null,
+        'view.admin.page': null,
+        'view.settings': null,
+        'view.stats': null
       };
 
       candoo.configureActivities(activities);
@@ -83,10 +87,10 @@ describe('candoo', function() {
         }
       };
 
-      can.configureActivities(activity);
+      can._activityRegistry = activity;
 
       var middleware = can.do('view.profile');
-      var req = { user: {}, params: {} };
+      var req = { user: {} };
       var res = {};
       var spy = sinon.spy();
 
@@ -122,6 +126,7 @@ describe('candoo', function() {
       expect(spy.callCount).toEqual(1);
       expect(args[0]).not.toEqual(undefined);
       expect(args[0].message).toEqual(rejectMessage);
+      expect(args[0].status).toEqual(401);
     });
 
     it('should call next with an error for unregistered activity', function() {
@@ -131,12 +136,35 @@ describe('candoo', function() {
       var res = {};
       var next = sinon.spy();
       var expectedMessage = util.format(can._notRegisteredMessage, activityName);
+      var expectedStatus = 401;
 
       middleware(req, res, next);
 
       var args = next.firstCall.args;
       expect(next.callCount).toEqual(1);
       expect(args[0].message).toEqual(expectedMessage);
+    });
+
+    it('should fail and call the onFailure callback', function() {
+      var onFailureSpy = sinon.spy();
+      var activity = {
+        'view.profile': function(req, done) {
+          done(req.user !== undefined, null, { onFailure: onFailureSpy });
+        }
+      };
+
+      can._activityRegistry = activity;
+
+      var middleware = can.do('view.profile');
+      var req = {};
+      var res = {};
+      var spy = sinon.spy();
+
+      middleware(req, res, spy);
+
+      expect(onFailureSpy.callCount).toEqual(1);
+      expect(onFailureSpy.firstCall.args).toEqual([req, res, spy]);
+      expect(spy.callCount).toEqual(0);
     });
 
   });
